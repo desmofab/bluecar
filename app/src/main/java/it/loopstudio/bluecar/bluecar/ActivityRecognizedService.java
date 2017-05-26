@@ -17,6 +17,7 @@ import com.google.android.gms.location.DetectedActivity;
 import java.util.List;
 
 /**
+ * BlueCar
  * Created by desmo on 24/05/2017.
  */
 
@@ -138,7 +139,8 @@ public class ActivityRecognizedService  extends IntentService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
+
+            String action = intent.getAction();
 
             switch (action){
                 //case BluetoothDevice.ACTION_ACL_CONNECTED:
