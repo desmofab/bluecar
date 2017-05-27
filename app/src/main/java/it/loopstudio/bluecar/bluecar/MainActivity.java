@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.SeekBar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,8 +24,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public GoogleApiClient mApiClient;
 
     public BTReceiver mBTReceiver;
-
-    private SeekBar mSeekBar;
 
     //public int Confidence;
 
@@ -54,29 +51,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         mApiClient.connect();
 
-
-        //SET Confidence
-        mSeekBar = (SeekBar) findViewById(R.id.seekBar1);
-
-
-        //SEEKBAR
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                //Confidence = progress;
-                //int x=1;
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
     }
 
