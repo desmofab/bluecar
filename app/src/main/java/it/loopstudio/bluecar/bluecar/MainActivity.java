@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onConnected(@Nullable Bundle bundle) {
         Intent intent = new Intent( this, ActivityRecognizedService.class );
         PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
-        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates( mApiClient, 3000, pendingIntent ); //5min
+        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates( mApiClient, 300000, pendingIntent ); //5min
 
         //pendingIntent.cancel();  TODO: STOP SERVICE WITH AN ON OFF BUTTON
     }
