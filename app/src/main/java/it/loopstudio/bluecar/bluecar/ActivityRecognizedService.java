@@ -1,11 +1,7 @@
 package it.loopstudio.bluecar.bluecar;
 
 import android.app.IntentService;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -17,7 +13,7 @@ import com.google.android.gms.location.DetectedActivity;
 import java.util.List;
 
 /**
- * BlueCar
+ * Play Service
  * Created by desmo on 24/05/2017.
  */
 
@@ -34,13 +30,11 @@ public class ActivityRecognizedService  extends IntentService {
     }
 
 
+
     public void onCreate(){
         super.onCreate();
 
-        IntentFilter filter = new IntentFilter();
-        //filter3.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        registerReceiver(mBroadcastReceiver, filter);
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
 
 
@@ -48,7 +42,6 @@ public class ActivityRecognizedService  extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         if(ActivityRecognitionResult.hasResult(intent)) {
-            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
             handleDetectedActivities( result.getProbableActivities() );
         }
@@ -65,15 +58,15 @@ public class ActivityRecognizedService  extends IntentService {
 
     }
 
-    private void DisableBluetooth(){
-
-        if (mBluetoothAdapter.isEnabled()){
-            mBluetoothAdapter.disable();
-            Log.e("Bluecar","Bluetooth Disabled");
-            notifying("turned OFF");
-        }
-
-    }
+//    private void DisableBluetooth(){
+//
+//        if (mBluetoothAdapter.isEnabled()){
+//            mBluetoothAdapter.disable();
+//            Log.e("Bluecar","Bluetooth Disabled");
+//            notifying("turned OFF");
+//        }
+//
+//    }
 
 
     private void notifying(String onOff){
@@ -112,6 +105,9 @@ public class ActivityRecognizedService  extends IntentService {
                 case DetectedActivity.STILL: {
                     Log.e( "ActivityRecogition", "Still: " + activity.getConfidence() );
                     //DisableBluetooth(activity.getConfidence());
+//                    if(activity.getConfidence() >= 75) {
+//                        EnableBluetooth();
+//                    }
                     break;
                 }
                 case DetectedActivity.TILTING: {
@@ -135,30 +131,17 @@ public class ActivityRecognizedService  extends IntentService {
 
 
 
-    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String action = intent.getAction();
-
-            switch (action){
-                //case BluetoothDevice.ACTION_ACL_CONNECTED:
-                //..
-                    //break;
-                case BluetoothDevice.ACTION_ACL_DISCONNECTED:
-                    DisableBluetooth();
-                    break;
-            }
-        }
-    };
 
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
 
-        unregisterReceiver(mBroadcastReceiver);
-    }
+//    public static boolean isBluetoothHeadsetConnected() {
+//        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()
+//                && mBluetoothAdapter.getProfileConnectionState(BluetoothHeadset.HEADSET) == BluetoothHeadset.STATE_CONNECTED;
+//    }
+
+
+
+
 
 }
