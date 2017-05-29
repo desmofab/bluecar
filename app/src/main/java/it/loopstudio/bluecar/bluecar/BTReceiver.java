@@ -9,6 +9,9 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Bluetooth Activity
  * Created by desmo on 26/05/2017.
@@ -16,13 +19,31 @@ import android.util.Log;
 
 public class BTReceiver extends BroadcastReceiver {
 
+    public boolean BTisON = false;
+    public boolean BTisConnected = false;
+
     public Context context;
 
     public BluetoothAdapter mBluetoothAdapter;
 
+    private Timer countdown;
+
+    private TimerTask disconnectBT;
+
     public BTReceiver(){
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        countdown = new Timer();
+
+        disconnectBT = new TimerTask() {
+            @Override
+            public void run() {
+
+                if(BTisON && !BTisConnected)
+                    DisableBluetooth();
+            }
+        };
     }
 
     @Override
@@ -31,13 +52,46 @@ public class BTReceiver extends BroadcastReceiver {
         this.context = context;
 
         String action = intent.getAction();
+        int state;
 
         switch (action){
+
+            case BluetoothAdapter.ACTION_STATE_CHANGED:
+                state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+                if (state == BluetoothAdapter.STATE_OFF)
+                {
+                    //Toast.makeText(context, "Bluetooth is off", Toast.LENGTH_SHORT).show();
+                    Log.d("BroadcastActions", "Bluetooth is off");
+
+                    BTisON = false;
+                }
+                else if (state == BluetoothAdapter.STATE_TURNING_OFF)
+                {
+                    //Toast.makeText(context, "Bluetooth is turning off", Toast.LENGTH_SHORT).show();
+                    Log.d("BroadcastActions", "Bluetooth is turning off");
+                }
+                else if(state == BluetoothAdapter.STATE_ON)
+                {
+                    Log.d("BroadcastActions", "Bluetooth is on");
+
+                    BTisON = true;
+
+                    //Disconnect if no devices was connected within 5 mins
+                    countdown.schedule(disconnectBT, 300000);
+                }
+                break;
+
             case BluetoothDevice.ACTION_ACL_CONNECTED:
                 Log.e( "BLUETOOTH ACTIVITY", "ACTION_ACL_CONNECTED");
+
+                BTisConnected = true;
+                disconnectBT.cancel();
                 break;
+
             case BluetoothDevice.ACTION_ACL_DISCONNECTED:
                 DisableBluetooth();
+                BTisConnected = false;
+
                 Log.e( "BLUETOOTH ACTIVITY", "ACTION_ACL_DISCONNECTED");
                 break;
         }

@@ -52,11 +52,13 @@ public class ActivityRecognizedService  extends IntentService {
 
         if (!mBluetoothAdapter.isEnabled()){
             mBluetoothAdapter.enable();
+
             Log.e("Bluecar","Bluetooth Enabled");
             notifying("turned ON");
         }
 
     }
+
 
 //    private void DisableBluetooth(){
 //
@@ -82,7 +84,7 @@ public class ActivityRecognizedService  extends IntentService {
             switch( activity.getType() ) {
                 case DetectedActivity.IN_VEHICLE: {
                     Log.e( "ActivityRecogition", "In Vehicle: " + activity.getConfidence() );
-                    if(activity.getConfidence() >= 75) {
+                    if(activity.getConfidence() >= 80) {
                         EnableBluetooth();
                     }
                     break;
