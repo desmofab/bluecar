@@ -84,7 +84,7 @@ public class ActivityRecognizedService  extends IntentService {
             switch( activity.getType() ) {
                 case DetectedActivity.IN_VEHICLE: {
                     Log.e( "ActivityRecogition", "In Vehicle: " + activity.getConfidence() );
-                    if(activity.getConfidence() >= 80) {
+                    if(activity.getConfidence() >= 75) {
                         EnableBluetooth();
                     }
                     break;

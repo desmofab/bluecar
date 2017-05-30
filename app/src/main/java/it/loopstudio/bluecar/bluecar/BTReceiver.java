@@ -19,7 +19,6 @@ import java.util.TimerTask;
 
 public class BTReceiver extends BroadcastReceiver {
 
-    public boolean BTisON = false;
     public boolean BTisConnected = false;
 
     public Context context;
@@ -28,7 +27,7 @@ public class BTReceiver extends BroadcastReceiver {
 
     private Timer countdown;
 
-    private TimerTask disconnectBT;
+    private TimerTask TurnOffBt;
 
     public BTReceiver(){
 
@@ -36,11 +35,11 @@ public class BTReceiver extends BroadcastReceiver {
 
         countdown = new Timer();
 
-        disconnectBT = new TimerTask() {
+        TurnOffBt = new TimerTask() {
             @Override
             public void run() {
 
-                if(BTisON && !BTisConnected)
+                if(!BTisConnected)
                     DisableBluetooth();
             }
         };
@@ -55,15 +54,12 @@ public class BTReceiver extends BroadcastReceiver {
         int state;
 
         switch (action){
-
             case BluetoothAdapter.ACTION_STATE_CHANGED:
                 state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
                 if (state == BluetoothAdapter.STATE_OFF)
                 {
                     //Toast.makeText(context, "Bluetooth is off", Toast.LENGTH_SHORT).show();
                     Log.d("BroadcastActions", "Bluetooth is off");
-
-                    BTisON = false;
                 }
                 else if (state == BluetoothAdapter.STATE_TURNING_OFF)
                 {
@@ -73,11 +69,8 @@ public class BTReceiver extends BroadcastReceiver {
                 else if(state == BluetoothAdapter.STATE_ON)
                 {
                     Log.d("BroadcastActions", "Bluetooth is on");
-
-                    BTisON = true;
-
                     //Disconnect if no devices was connected within 5 mins
-                    countdown.schedule(disconnectBT, 300000);
+                    countdown.schedule(TurnOffBt, 180000);
                 }
                 break;
 
@@ -85,7 +78,7 @@ public class BTReceiver extends BroadcastReceiver {
                 Log.e( "BLUETOOTH ACTIVITY", "ACTION_ACL_CONNECTED");
 
                 BTisConnected = true;
-                disconnectBT.cancel();
+                TurnOffBt.cancel();
                 break;
 
             case BluetoothDevice.ACTION_ACL_DISCONNECTED:
