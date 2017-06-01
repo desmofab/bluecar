@@ -7,13 +7,17 @@ import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothHeadset;
+
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
- * Play Service
+ * Play Service and BT management
  * Created by desmo on 24/05/2017.
  */
 
@@ -29,15 +33,32 @@ public class ActivityRecognizedService  extends IntentService {
         super(name);
     }
 
+    private Timer countdown;
+
+    private TimerTask TurnOffBt;
 
 
     public void onCreate(){
         super.onCreate();
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        countdown = new Timer();
+
+        TurnOffBt = new TimerTask() {
+            @Override
+            public void run() {
+
+                //List connectedDevice = mBluetoothHeadset.getConnectedDevices();
+                //if(connectedDevice.isEmpty())
+                if(!isBluetoothHeadsetConnected())
+                    DisableBluetooth();
+            }
+        };
     }
 
 
+    //Intent Servizio Background
     @Override
     protected void onHandleIntent(Intent intent) {
 
@@ -48,10 +69,14 @@ public class ActivityRecognizedService  extends IntentService {
     }
 
 
+    //Abilita antenna BT
     private void EnableBluetooth(){
 
         if (!mBluetoothAdapter.isEnabled()){
             mBluetoothAdapter.enable();
+
+            //Parte il countdown che se non trova dispositivi connessi disabilità il bluetooth
+            countdown.schedule(TurnOffBt, 60000, 180000);
 
             Log.e("Bluecar","Bluetooth Enabled");
             notifying("turned ON");
@@ -60,17 +85,29 @@ public class ActivityRecognizedService  extends IntentService {
     }
 
 
-//    private void DisableBluetooth(){
-//
-//        if (mBluetoothAdapter.isEnabled()){
-//            mBluetoothAdapter.disable();
-//            Log.e("Bluecar","Bluetooth Disabled");
-//            notifying("turned OFF");
-//        }
-//
-//    }
+    //Disabilita antenna BT
+    private void DisableBluetooth(){
+
+        if (mBluetoothAdapter.isEnabled()){
+            mBluetoothAdapter.disable();
+            Log.e("Bluecar","Bluetooth Disabled");
+            notifying("turned OFF");
+        }
+
+    }
 
 
+
+    //Check if a BT Headset device is connected
+    public boolean isBluetoothHeadsetConnected() {
+        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()
+                && mBluetoothAdapter.getProfileConnectionState(BluetoothHeadset.HEADSET) == BluetoothHeadset.STATE_CONNECTED;
+    }
+
+
+
+
+    //Notifica antenna ON/OFF
     private void notifying(String onOff){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentText( "Bluetooth "+ onOff);
@@ -79,6 +116,8 @@ public class ActivityRecognizedService  extends IntentService {
         NotificationManagerCompat.from(this).notify(0, builder.build());
     }
 
+
+    //Cambio stato Play Service
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
         for( DetectedActivity activity : probableActivities ) {
             switch( activity.getType() ) {
@@ -107,9 +146,9 @@ public class ActivityRecognizedService  extends IntentService {
                 case DetectedActivity.STILL: {
                     Log.e( "ActivityRecogition", "Still: " + activity.getConfidence() );
                     //DisableBluetooth(activity.getConfidence());
-//                    if(activity.getConfidence() >= 75) {
-//                        EnableBluetooth();
-//                    }
+                    if(activity.getConfidence() >= 75) {
+                        EnableBluetooth();
+                    }
                     break;
                 }
                 case DetectedActivity.TILTING: {
@@ -130,20 +169,6 @@ public class ActivityRecognizedService  extends IntentService {
             }
         }
     }
-
-
-
-
-
-
-//    public static boolean isBluetoothHeadsetConnected() {
-//        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()
-//                && mBluetoothAdapter.getProfileConnectionState(BluetoothHeadset.HEADSET) == BluetoothHeadset.STATE_CONNECTED;
-//    }
-
-
-
 
 
 }

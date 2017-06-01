@@ -21,13 +21,13 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".BTReceiver">
-            <intent-filter>
-                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED"/>
-                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
-                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name=".BTReceiver">-->
+            <!--<intent-filter>-->
+                <!--&lt;!&ndash;action android:name="android.bluetooth.adapter.action.STATE_CHANGED"/&ndash;&gt;-->
+                <!--<action android:name="android.bluetooth.device.action.ACL_CONNECTED" />-->
+                <!--<action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <service android:name=".ActivityRecognizedService"/>
 

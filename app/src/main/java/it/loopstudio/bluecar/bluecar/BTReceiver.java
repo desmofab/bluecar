@@ -19,7 +19,7 @@ import java.util.TimerTask;
 
 public class BTReceiver extends BroadcastReceiver {
 
-    public boolean BTisConnected = false;
+    public boolean BTisConnected;
 
     public Context context;
 
@@ -30,6 +30,8 @@ public class BTReceiver extends BroadcastReceiver {
     private TimerTask TurnOffBt;
 
     public BTReceiver(){
+
+        //BTisConnected = false;
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -69,8 +71,9 @@ public class BTReceiver extends BroadcastReceiver {
                 else if(state == BluetoothAdapter.STATE_ON)
                 {
                     Log.d("BroadcastActions", "Bluetooth is on");
+                    BTisConnected = false;
                     //Disconnect if no devices was connected within 5 mins
-                    countdown.schedule(TurnOffBt, 180000);
+                    countdown.schedule(TurnOffBt, 60000);
                 }
                 break;
 
@@ -82,8 +85,8 @@ public class BTReceiver extends BroadcastReceiver {
                 break;
 
             case BluetoothDevice.ACTION_ACL_DISCONNECTED:
-                DisableBluetooth();
                 BTisConnected = false;
+                DisableBluetooth();
 
                 Log.e( "BLUETOOTH ACTIVITY", "ACTION_ACL_DISCONNECTED");
                 break;

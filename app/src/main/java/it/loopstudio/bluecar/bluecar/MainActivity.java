@@ -7,9 +7,7 @@ package it.loopstudio.bluecar.bluecar;
 
 import android.app.PendingIntent;
 
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public GoogleApiClient mApiClient;
 
-    public BTReceiver mBTReceiver;
+    //public BTReceiver mBTReceiver;
 
     //public int Confidence;
 
@@ -34,12 +32,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_main);
 
 
-        //Bluetooth Receiver
-        mBTReceiver = new BTReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        registerReceiver(mBTReceiver, filter);
+//        //Bluetooth Receiver
+//        mBTReceiver = new BTReceiver();
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+//        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+//        registerReceiver(mBTReceiver, filter);
 
 
         //Play Service
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onConnected(@Nullable Bundle bundle) {
         Intent intent = new Intent( this, ActivityRecognizedService.class );
         PendingIntent pendingIntent = PendingIntent.getService( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
-        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates( mApiClient, 300000, pendingIntent ); //5min
+        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates( mApiClient, 180000, pendingIntent ); //5min
 
         //pendingIntent.cancel();  TODO: STOP SERVICE WITH AN ON OFF BUTTON
     }
@@ -83,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onDestroy();
 
         //Unregister Bluetooth Receiver
-        unregisterReceiver(mBTReceiver);
+        //unregisterReceiver(mBTReceiver);
     }
 
 }
