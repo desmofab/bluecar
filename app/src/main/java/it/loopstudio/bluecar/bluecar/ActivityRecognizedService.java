@@ -146,9 +146,9 @@ public class ActivityRecognizedService  extends IntentService {
                 case DetectedActivity.STILL: {
                     Log.e( "ActivityRecogition", "Still: " + activity.getConfidence() );
                     //DisableBluetooth(activity.getConfidence());
-                    if(activity.getConfidence() >= 75) {
-                        EnableBluetooth();
-                    }
+//                    if(activity.getConfidence() >= 75) {
+//                        EnableBluetooth();
+//                    }
                     break;
                 }
                 case DetectedActivity.TILTING: {
