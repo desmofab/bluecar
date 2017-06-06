@@ -41,20 +41,30 @@ public class ActivityRecognizedService  extends IntentService {
     public void onCreate(){
         super.onCreate();
 
+        //Bluetooth Adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        //New Timer
         countdown = new Timer();
 
+        //Scheduled Action check if headset is connected
         TurnOffBt = new TimerTask() {
             @Override
             public void run() {
 
                 //List connectedDevice = mBluetoothHeadset.getConnectedDevices();
                 //if(connectedDevice.isEmpty())
-                if(!isBluetoothHeadsetConnected())
+                Log.e("Timer","Esecuzione Timer");
+                if(!isBluetoothHeadsetConnected()) {
                     DisableBluetooth();
+                    Log.e("Timer","Bluetooth verrà disabilitato");
+                }
             }
         };
+
+        //Countdown Starts
+        countdown.schedule(TurnOffBt, 60000, 180000);
+        Log.e("Timer","Timer Partito");
     }
 
 
@@ -74,9 +84,6 @@ public class ActivityRecognizedService  extends IntentService {
 
         if (!mBluetoothAdapter.isEnabled()){
             mBluetoothAdapter.enable();
-
-            //Parte il countdown che se non trova dispositivi connessi disabilità il bluetooth
-            countdown.schedule(TurnOffBt, 60000, 180000);
 
             Log.e("Bluecar","Bluetooth Enabled");
             notifying("turned ON");
