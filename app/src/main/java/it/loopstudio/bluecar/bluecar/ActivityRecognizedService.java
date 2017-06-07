@@ -54,17 +54,33 @@ public class ActivityRecognizedService  extends IntentService {
 
                 //List connectedDevice = mBluetoothHeadset.getConnectedDevices();
                 //if(connectedDevice.isEmpty())
-                Log.e("Timer","Esecuzione Timer");
+                Log.e("Timer","Controllo headsets connessi");
                 if(!isBluetoothHeadsetConnected()) {
                     DisableBluetooth();
-                    Log.e("Timer","Bluetooth verrà disabilitato");
+                    //Log.e("Timer","Inattività Bluetooth verrà disabilitato se attivo");
                 }
             }
         };
 
+        //Nel caso il BT fosse attivo già da prima
+        if (mBluetoothAdapter.isEnabled() && !isBluetoothHeadsetConnected())
+            startTimer();
+    }
+
+    private void startTimer(){
+
         //Countdown Starts
         countdown.schedule(TurnOffBt, 60000, 180000);
-        Log.e("Timer","Timer Partito");
+        Log.e("Timer","Timer partito");
+    }
+
+
+    private void stopTimer(){
+
+        //Countdown Stops
+        countdown.cancel();
+        countdown.purge();
+        Log.e("Timer","Timer spento");
     }
 
 
@@ -85,6 +101,8 @@ public class ActivityRecognizedService  extends IntentService {
         if (!mBluetoothAdapter.isEnabled()){
             mBluetoothAdapter.enable();
 
+            startTimer();
+
             Log.e("Bluecar","Bluetooth Enabled");
             notifying("turned ON");
         }
@@ -97,9 +115,15 @@ public class ActivityRecognizedService  extends IntentService {
 
         if (mBluetoothAdapter.isEnabled()){
             mBluetoothAdapter.disable();
+
             Log.e("Bluecar","Bluetooth Disabled");
             notifying("turned OFF");
+        }else
+        {
+            Log.e("Bluecar","Bluetooth already disabled");
         }
+
+        stopTimer();
 
     }
 
