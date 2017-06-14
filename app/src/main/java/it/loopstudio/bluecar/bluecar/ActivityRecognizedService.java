@@ -1,7 +1,10 @@
 package it.loopstudio.bluecar.bluecar;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -24,6 +27,8 @@ import java.util.TimerTask;
 public class ActivityRecognizedService  extends IntentService {
 
     public BluetoothAdapter mBluetoothAdapter;
+
+    public NetworkInfo wifiCheck;
 
     public ActivityRecognizedService() {
         super("ActivityRecognizedService");
@@ -98,6 +103,11 @@ public class ActivityRecognizedService  extends IntentService {
     //Abilita antenna BT
     private void EnableBluetooth(){
 
+        if(isWifiConnected()){
+            Log.e("Bluecar","...but WiFi is connected");
+            return;
+        }
+
         if (!mBluetoothAdapter.isEnabled()){
             mBluetoothAdapter.enable();
 
@@ -137,6 +147,16 @@ public class ActivityRecognizedService  extends IntentService {
 
 
 
+    public boolean isWifiConnected(){
+
+        ConnectivityManager connectionManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        wifiCheck = connectionManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+        return wifiCheck.isConnected();
+    }
+
+
+
 
     //Notifica antenna ON/OFF
     private void notifying(String onOff){
@@ -144,6 +164,7 @@ public class ActivityRecognizedService  extends IntentService {
         builder.setContentText( "Bluetooth "+ onOff);
         builder.setSmallIcon( R.mipmap.ic_launcher );
         builder.setContentTitle( getString( R.string.app_name ) );
+        builder.setAutoCancel(true);
         NotificationManagerCompat.from(this).notify(0, builder.build());
     }
 
