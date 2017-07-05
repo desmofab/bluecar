@@ -95,7 +95,17 @@ public class ActivityRecognizedService  extends IntentService {
 
         if(ActivityRecognitionResult.hasResult(intent)) {
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
-            handleDetectedActivities( result.getProbableActivities() );
+
+            //NEW SOLUTION
+            DetectedActivity MostProbableActivity = result.getMostProbableActivity();
+
+            if(MostProbableActivity.getType() == DetectedActivity.IN_VEHICLE){
+
+                EnableBluetooth();
+            }
+            //05/05/2017
+
+            //handleDetectedActivities( result.getProbableActivities() );
         }
     }
 
