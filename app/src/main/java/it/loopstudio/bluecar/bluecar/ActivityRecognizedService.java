@@ -99,7 +99,7 @@ public class ActivityRecognizedService  extends IntentService {
             //NEW SOLUTION
             DetectedActivity MostProbableActivity = result.getMostProbableActivity();
 
-            if(MostProbableActivity.getType() == DetectedActivity.IN_VEHICLE){
+            if(MostProbableActivity.getType() == DetectedActivity.IN_VEHICLE && MostProbableActivity.getConfidence() >= 75){
 
                 EnableBluetooth();
             }
