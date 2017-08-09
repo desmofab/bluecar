@@ -15,7 +15,6 @@ import android.bluetooth.BluetoothHeadset;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -26,9 +25,7 @@ import java.util.TimerTask;
 
 public class ActivityRecognizedService  extends IntentService {
 
-    public BluetoothAdapter mBluetoothAdapter;
-
-    public NetworkInfo wifiCheck;
+    private BluetoothAdapter mBluetoothAdapter;
 
     public ActivityRecognizedService() {
         super("ActivityRecognizedService");
@@ -60,7 +57,7 @@ public class ActivityRecognizedService  extends IntentService {
                 //List connectedDevice = mBluetoothHeadset.getConnectedDevices();
                 //if(connectedDevice.isEmpty())
                 Log.e("Timer","Controllo headsets connessi");
-                if(!isBluetoothHeadsetConnected()) {
+                if(noBluetoothHeadsetConnected()) {
                     DisableBluetooth();
                     //Log.e("Timer","Inattività Bluetooth verrà disabilitato se attivo");
                 }
@@ -68,7 +65,7 @@ public class ActivityRecognizedService  extends IntentService {
         };
 
         //Nel caso il BT fosse attivo già da prima
-        if (mBluetoothAdapter.isEnabled() && !isBluetoothHeadsetConnected())
+        if (mBluetoothAdapter.isEnabled() && noBluetoothHeadsetConnected())
             startTimer();
     }
 
@@ -150,19 +147,20 @@ public class ActivityRecognizedService  extends IntentService {
 
 
     //Check if a BT Headset device is connected
-    public boolean isBluetoothHeadsetConnected() {
-        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()
-                && mBluetoothAdapter.getProfileConnectionState(BluetoothHeadset.HEADSET) == BluetoothHeadset.STATE_CONNECTED;
+    private boolean noBluetoothHeadsetConnected() {
+        return !(mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()
+                && mBluetoothAdapter.getProfileConnectionState(BluetoothHeadset.HEADSET) == BluetoothHeadset.STATE_CONNECTED);
     }
 
 
-
-    public boolean isWifiConnected(){
+    //Check if WIFI is connected
+    private boolean isWifiConnected(){
 
         ConnectivityManager connectionManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        wifiCheck = connectionManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo networkInfo = connectionManager.getActiveNetworkInfo();
+        //NetworkInfo wifiCheck = connectionManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI); --DEPRECATED METHOD
 
-        return wifiCheck.isConnected();
+        return networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
 
@@ -179,58 +177,58 @@ public class ActivityRecognizedService  extends IntentService {
     }
 
 
-    //Cambio stato Play Service
-    private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
-        for( DetectedActivity activity : probableActivities ) {
-            switch( activity.getType() ) {
-                case DetectedActivity.IN_VEHICLE: {
-                    Log.e( "ActivityRecogition", "In Vehicle: " + activity.getConfidence() );
-                    if(activity.getConfidence() >= 75) {
-                        EnableBluetooth();
-                    }
-                    break;
-                }
-                case DetectedActivity.ON_BICYCLE: {
-                    Log.e( "ActivityRecogition", "On Bicycle: " + activity.getConfidence() );
-                    //DisableBluetooth(activity.getConfidence());
-                    break;
-                }
-                case DetectedActivity.ON_FOOT: {
-                    Log.e( "ActivityRecogition", "On Foot: " + activity.getConfidence() );
-                    //DisableBluetooth(activity.getConfidence());
-                    break;
-                }
-                case DetectedActivity.RUNNING: {
-                    Log.e( "ActivityRecogition", "Running: " + activity.getConfidence() );
-                    //DisableBluetooth(activity.getConfidence());
-                    break;
-                }
-                case DetectedActivity.STILL: {
-                    Log.e( "ActivityRecogition", "Still: " + activity.getConfidence() );
-                    //DisableBluetooth(activity.getConfidence());
+//    //Cambio stato Play Service
+//    private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
+//        for( DetectedActivity activity : probableActivities ) {
+//            switch( activity.getType() ) {
+//                case DetectedActivity.IN_VEHICLE: {
+//                    Log.e( "ActivityRecogition", "In Vehicle: " + activity.getConfidence() );
 //                    if(activity.getConfidence() >= 75) {
 //                        EnableBluetooth();
 //                    }
-                    break;
-                }
-                case DetectedActivity.TILTING: {
-                    Log.e( "ActivityRecogition", "Tilting: " + activity.getConfidence() );
-                    //DisableBluetooth(activity.getConfidence());
-                    break;
-                }
-                case DetectedActivity.WALKING: {
-                    Log.e( "ActivityRecogition", "Walking: " + activity.getConfidence() );
-                    //DisableBluetooth(activity.getConfidence());
-                    break;
-                }
-                case DetectedActivity.UNKNOWN: {
-                    Log.e( "ActivityRecogition", "Unknown: " + activity.getConfidence() );
-                    //DisableBluetooth();
-                    break;
-                }
-            }
-        }
-    }
+//                    break;
+//                }
+//                case DetectedActivity.ON_BICYCLE: {
+//                    Log.e( "ActivityRecogition", "On Bicycle: " + activity.getConfidence() );
+//                    //DisableBluetooth(activity.getConfidence());
+//                    break;
+//                }
+//                case DetectedActivity.ON_FOOT: {
+//                    Log.e( "ActivityRecogition", "On Foot: " + activity.getConfidence() );
+//                    //DisableBluetooth(activity.getConfidence());
+//                    break;
+//                }
+//                case DetectedActivity.RUNNING: {
+//                    Log.e( "ActivityRecogition", "Running: " + activity.getConfidence() );
+//                    //DisableBluetooth(activity.getConfidence());
+//                    break;
+//                }
+//                case DetectedActivity.STILL: {
+//                    Log.e( "ActivityRecogition", "Still: " + activity.getConfidence() );
+//                    //DisableBluetooth(activity.getConfidence());
+////                    if(activity.getConfidence() >= 75) {
+////                        EnableBluetooth();
+////                    }
+//                    break;
+//                }
+//                case DetectedActivity.TILTING: {
+//                    Log.e( "ActivityRecogition", "Tilting: " + activity.getConfidence() );
+//                    //DisableBluetooth(activity.getConfidence());
+//                    break;
+//                }
+//                case DetectedActivity.WALKING: {
+//                    Log.e( "ActivityRecogition", "Walking: " + activity.getConfidence() );
+//                    //DisableBluetooth(activity.getConfidence());
+//                    break;
+//                }
+//                case DetectedActivity.UNKNOWN: {
+//                    Log.e( "ActivityRecogition", "Unknown: " + activity.getConfidence() );
+//                    //DisableBluetooth();
+//                    break;
+//                }
+//            }
+//        }
+//    }
 
 
 }

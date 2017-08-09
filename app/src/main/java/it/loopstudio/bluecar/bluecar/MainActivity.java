@@ -19,7 +19,7 @@ import com.google.android.gms.location.ActivityRecognition;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-    public GoogleApiClient mApiClient;
+    private GoogleApiClient mApiClient;
 
     //public BTReceiver mBTReceiver;
 

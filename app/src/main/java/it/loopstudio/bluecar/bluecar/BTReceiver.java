@@ -19,15 +19,15 @@ import java.util.TimerTask;
 
 public class BTReceiver extends BroadcastReceiver {
 
-    public boolean BTisConnected;
+    private boolean BTisConnected;
 
-    public Context context;
+    private Context context;
 
-    public BluetoothAdapter mBluetoothAdapter;
+    private final BluetoothAdapter mBluetoothAdapter;
 
-    private Timer countdown;
+    private final Timer countdown;
 
-    private TimerTask TurnOffBt;
+    private final TimerTask TurnOffBt;
 
     public BTReceiver(){
 
