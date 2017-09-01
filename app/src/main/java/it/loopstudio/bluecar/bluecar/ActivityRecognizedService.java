@@ -1,6 +1,7 @@
 package it.loopstudio.bluecar.bluecar;
 
 import android.app.IntentService;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -15,6 +16,7 @@ import android.bluetooth.BluetoothHeadset;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,6 +40,8 @@ public class ActivityRecognizedService  extends IntentService {
     private Timer countdown;
 
     private TimerTask TurnOffBt;
+
+    //public static String headsetName = "desmoInsignia";
 
 
     public void onCreate(){
@@ -100,6 +104,8 @@ public class ActivityRecognizedService  extends IntentService {
 
                 EnableBluetooth();
             }
+
+
             //05/05/2017
 
             //handleDetectedActivities( result.getProbableActivities() );
@@ -114,6 +120,9 @@ public class ActivityRecognizedService  extends IntentService {
             Log.e("Bluecar","...but WiFi is connected");
             return;
         }
+
+        //if(!isDeviceNearby(headsetName))
+            //return;
 
         if (!mBluetoothAdapter.isEnabled()){
             mBluetoothAdapter.enable();
@@ -151,6 +160,24 @@ public class ActivityRecognizedService  extends IntentService {
         return !(mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()
                 && mBluetoothAdapter.getProfileConnectionState(BluetoothHeadset.HEADSET) == BluetoothHeadset.STATE_CONNECTED);
     }
+
+
+
+//    //Check if specificed BT Device is nearby
+//    public boolean isDeviceNearby(String BTDev){
+//
+//        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+//
+//        if (pairedDevices.size() > 0) {
+//            // There are paired devices. Get the name and address of each paired device.
+//            for (BluetoothDevice device : pairedDevices) {
+//                String deviceName = device.getName();
+//                String deviceHardwareAddress = device.getAddress(); // MAC address
+//            }
+//        }
+//
+//        return false;
+//    }
 
 
     //Check if WIFI is connected
