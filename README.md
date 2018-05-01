@@ -6,7 +6,6 @@
 
 * For Android > 6.0
 * 1.0
-* [Learn Markdown](https://bitbucket.org/desmofab/bluecar)
 
 ### Install ###
 
