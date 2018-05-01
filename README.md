@@ -1,29 +1,13 @@
-# README #
+# BUELCAR #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+### Automatically turn on and off the BT of your smartphone when you enter or exit your car. ###
 
 ### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* For Android > 6.0
+* 1.0
+* [Learn Markdown](https://bitbucket.org/desmofab/bluecar)
 
-### How do I get set up? ###
+### Install ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+* Build APK and GO
