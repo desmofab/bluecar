@@ -1,6 +1,6 @@
 # BLUECAR #
 
-### Automatically turn on and off the BT of your smartphone when you enter or exit your car. ###
+### Automatically turn on and off the BT of your smartphone when you get in or get out from your car. ###
 
 ### What is this repository for? ###
 
